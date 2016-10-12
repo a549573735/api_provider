@@ -1,0 +1,51 @@
+<!--<i class="fa fa-plus-square-o"></i>-->
+<i class="fa fa-minus-square-o"
+   ng-if="isLeaf(item)"
+   ng-click="warpCallback('itemClicked', item, $event, 3);"></i>
+<span class="line" ng-if="!isLeaf(item)">└  </span>
+<span class='text-field'
+      style="display: inline-block;" type="node">
+            <!--<i class="{{getItemIcon(item)}}" style="margin-right: 5px;"></i>{{item.field}}-->
+            <input type="text" class="text-line" style="width: 80px;"
+                   ng-model="$index"
+                   ng-show="getParentType(item)"
+                   ng-disabled="getParentType(item)"/>
+            <input type="text" class="text-line" style="width: 80px;"
+                   ng-model="item.field"
+                   ng-show="!getParentType(item)"
+                   ng-disabled="getParentType(item)"/>
+            <i class="glyphicon glyphicon-plus-sign" style="margin-top: 3px;margin-right: 3px;"
+               ng-click="warpCallback('itemClicked', item, $event, 1);"></i>
+            <i class="glyphicon glyphicon-remove-sign" style="margin-top: 3px;margin-right: 3px;"
+               ng-click="warpCallback('itemClicked', item, $event, 2);"></i>
+        </span>
+<span style="display: inline-block;width: 240px;" class="abc">
+    <input class="text-line" type="text"
+           ng-model="item.description">
+</span>
+<span style="display: inline-block;width: 120px;" class="abc">
+     <input class="text-line" type="text"
+            ng-model="item.format"
+            ng-hide="item.type == 'array' || item.type == 'object'"
+                style="width:80px;">
+    <div style="width:80px;height: 10px;" ng-show="item.type != 'array' || item.type != 'object'"></div>
+</span>
+<span style="display: inline-block;width: 120px;" class="abc" ng-show="item.properties.length == 0">
+    <select name="model_type_0" ng-model="item.type" style="width: 80px;">
+        <option value="string">字符串</option>
+        <option value="number">数字</option>
+        <option value="datetime">时间</option>
+        <option value="array">数组</option>
+        <option value="object">对象</option>
+    </select>
+</span>
+<span style="display: inline-block;width: 120px;" class="abc" ng-show="item.properties.length > 0">
+    <select name="model_type_1" ng-model="item.type" style="width: 80px;">
+        <option value="array">数组</option>
+        <option value="object">对象</option>
+    </select>
+</span>
+<ul ng-if="isLeaf(item)" class="table-tree" style="padding-left: 20px;">
+    <li ng-repeat="item in getItem(item)" data-type="{{getType(item)}}" ng-include="itemTemplateUrl || '/tpl/treeItemBody.html'"
+        data-index="{{$index}}" id="{{item.$$hashKey.split(':')[1]}}"></li>
+</ul>

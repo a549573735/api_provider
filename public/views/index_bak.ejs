@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+
+    <!--build:css stylesheets/wapmain.min.css -->
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/a.css' />
+    <!--/build-->
+
+
+    <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+
+    <!--build:js javascripts/all.min.js -->
+    <script type="text/javascript" src="/javascripts/main.js"></script>
+    <script type="text/javascript" src="/javascripts/a.js"></script>
+    <script type="text/javascript" src="/javascripts/b.js"></script>
+    <!--/build-->
+
+    <script type="text/javascript">
+      $(function(){
+        uialert();
+      })
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <div class="logo"></div>
+    <img src="/images/yunshouding.png" class="img">
+    <div class="content">AAAAAAAA</div>
+  </body>
+</html>

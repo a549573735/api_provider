@@ -1,0 +1,1078 @@
+<% include ../common/header.ejs %>
+<link href="/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    @charset "UTF-8";
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+        display: none !important;
+    }
+
+    ng\:form {
+        display: block;
+    }
+
+    .ng-animate-start {
+        clip: rect(0, auto, auto, 0);
+        -ms-zoom: 1.0001;
+    }
+
+    .ng-animate-active {
+        clip: rect(-1px, auto, auto, 0);
+        -ms-zoom: 1;
+    }
+
+    .config-data, .api-data {
+        display: none;
+    }
+
+    .cu-table th, .cu-table td {
+        border-top: 0px !important;
+    }
+
+    .cu-table th {
+        padding: 0px !important;
+    }
+
+    .cu-table td {
+        padding: 5px 0px !important;
+    }
+
+    .table-tree {
+        list-style: none;
+    }
+
+    .text-field {
+        padding: 5px 0px;
+        line-height: 21px;
+    }
+
+    .abc {
+        float: right;
+    }
+
+    li.first-ele > .line {
+        visibility: hidden;
+    }
+
+    input[disabled='disabled'] {
+        background-color: #F3F3F3;
+        color: #cdcdcd;
+    }
+
+    .methodurl {
+        background: #FCF2F2;
+        border-left: 5px solid #DDB5B3;
+        padding: 5px 10px;
+        margin: 5px 0 10px 0;
+    }
+
+</style>
+<div class="container container-body" ng-app="app" ng-controller="appCtrl">
+    <div class="row">
+        <div class="api-editor" id="apiobj">
+            <a class="btn btn-primary" ng-click="save()" style="float: right;">
+                <i class="glyphicon glyphicon-floppy-disk"></i>
+                保存
+            </a>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs tab-nav" role="tablist">
+                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                                                          data-toggle="tab" ng-click="toggleTab(1)">普通编辑器</a></li>
+                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab"
+                                           ng-click="toggleTab(2)">JSON文本编辑器</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active form-horizontal" id="home">
+                    <h4 class="subtitle">基本信息</h4>
+
+                    <div class="basicnifo">
+                        <div class="row  ">
+                            <div class="col-md-3">
+                                <label class="control-label">Api编组名称</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input name="summary" value="" class="form-control" required type="text"
+                                       placeholder="中文简短描述"
+                                       ng-class="{'api-error': !checkValidate('summary')}"
+                                       ng-keydown="inputKeyDown()"
+                                       style="width: 250px;" ng-model="model.summary">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-3">
+                                <label class="control-label">Api</label>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-control" style="padding-left: 0px;">
+                                    <span style="font-size: 13px;">利用请求参数进行分发:</span>
+                                    ?
+                                    <input name="method_dispatch_key" ng-model="model.method_dispatch_key"
+                                           value="method" class="text-line" type="text" placeholder="参数名称"
+                                           ng-class="{'api-error': !checkValidate('method_dispatch_key')}"
+                                           ng-keydown="inputKeyDown()"
+                                           style="width: 60px;color: #0707EA;display: inline-block;">
+                                    =
+                                    <span class="red">{method_id}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="subtitle">后端信息</h4>
+
+                    <div class="basicnifo">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="control-label">后端URL地址</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="summary" ng-model="model.backend_url" class="form-control"
+                                       ng-class="{'api-error': !checkValidate('backend_url')}"
+                                       ng-keydown="inputKeyDown()"
+                                       type="text" placeholder="http://www.example.com/api/">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-control">
+                                    <span class="lnk">
+                                        <p class="active"
+                                           ng-click="taggleshowhide($event, 'config-data')">
+                                            <i class="glyphicon glyphicon-chevron-down"></i>
+                                            配置签名校验</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ng-cloak config-data" ng-cloak>
+                            <div class="col-md-3">
+                                <label class="control-label">后端沙箱地址</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="summary" ng-model="model.sandbox_url" class="form-control" type="text"
+                                       placeholder="http://www.example.com/api-sandbox/">
+                            </div>
+                        </div>
+                        <div class="row ng-cloak config-data" ng-cloak>
+                            <div class="col-md-3">
+                                <label class="control-label">服务配置地址</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="summary" ng-model="model.server_url" class="form-control" type="text"
+                                       placeholder="http://www.example.com/api-sandbox/">
+                            </div>
+                        </div>
+                        <div class="row ng-cloak config-data" ng-cloak>
+                            <div class="col-md-3">
+                                <label class="control-label">应用事件通知地址</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="summary" ng-model="model.appnotice_url" class="form-control" type="text"
+                                       placeholder="http://www.example.com/api-sandbox/">
+                            </div>
+                        </div>
+                        <div class="row ng-cloak config-data" ng-cloak>
+                            <div class="col-md-3">
+                                <label class="control-label">配置项</label>
+
+                                <p class="desc">(可供后期配置的参数数据)</p>
+                            </div>
+                            <div class="col-md-9">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th width="15%">参数传递方式</th>
+                                        <th width="15%">名称</th>
+                                        <th width="15%">值类型</th>
+                                        <th width="10%">设置值</th>
+                                        <th width="20%">说明</th>
+                                        <th width="10%"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="config in model.configs">
+                                        <td>
+                                            <select ng-model="config.request_type">
+                                                <option value="none">none</option>
+                                                <option value="request">request</option>
+                                                <option value="get">get</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input class="text-line" ng-model="config.name"
+                                                   ng-class="{'api-error': !checkValidate('checkConfig',$index)}"
+                                                   ng-keydown="inputKeyDown()"
+                                                   type="text">
+                                        </td>
+                                        <td>
+                                            <select ng-model="config.value_type" ng-change="changeValueType($index)">
+                                                <option value="datetime">请求时间</option>
+                                                <option value="sign">签名</option>
+                                                <option value="expr">表达式</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="gp_datetime"
+                                                    ng-model="config.format"
+                                                    ng-show="config.value_type == 'datetime'">
+                                                <option value="timestamp">UNIX时间戳</option>
+                                                <option value="custom">自定义</option>
+                                            </select>
+                                            <select class="gp_test"
+                                                    ng-model="config.format"
+                                                    ng-show="config.value_type == 'sign'">
+                                                <option ensurecfg="" value="ecos">ECOS.md5</option>
+                                                <option ensurecfg="" value="paipai">Paipai</option>
+                                                <option ensurecfg="" value="prism">Prism</option>
+                                                <option ensurecfg="" value="shopex">ShopEx.md5</option>
+                                                <option ensurecfg="" value="shopex_erp">ShopEx.ERP</option>
+                                                <option ensurecfg="" value="taobao">Taobao.md5</option>
+                                            </select>
+                                            <input class="text-line" type="text"
+                                                   ng-model="config.value"
+                                                   ng-show="config.value_type == 'expr'">
+                                        </td>
+                                        <td>
+                                            <input class="text-line" type="text" ng-model="config.description">
+                                        </td>
+                                        <td class="operator">
+                                            <i class="glyphicon glyphicon-remove-circle"
+                                               ng-click="removeConfig($index)"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div style="padding: 5px 8px;">
+                                    <span class="lnk" ng-click="addConfig()">添加配置项</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="subtitle">Api信息</h4>
+
+                    <div class="basicnifo">
+                        <div class="api-group ng-cloak" ng-repeat="api in model.apis" ng-cloak>
+                            <div class="row">
+                                <div class="col-md-3">
+                                        <span class="operator"
+                                              ng-click="removeApi($index)">
+                                            <i class="glyphicon glyphicon-remove-circle"></i>
+                                        </span>
+                                    <label class="control-label" data-bind="text: 'Api' + $index()">Api{{$index +
+                                        1}}</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>method id</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input class="text-line" type="text" placeholder="英数,下划线,唯一,不可变"
+                                                   ng-class="{'api-error': !checkValidate('checkmethodid',$index)}"
+                                                   ng-keydown="inputKeyDown()"
+                                                   ng-model="api.methodid"
+                                                   style="width: 220px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>Api方法名</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input class="text-line" type="text" placeholder="中文简短描述"
+                                                   ng-model="api.apiname"
+                                                   style="width: 220px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>请求方法</label>
+                                        </div>
+                                        <div class="col-md-9 checkbox-group">
+                                            <select ng-model="api.reqtype[0]" style="width:150px;">
+                                                <option value="get">GET</option>
+                                                <option value="post">POST</option>
+                                                <option value="put">PUT</option>
+                                                <option value="delete">DELETE</option>
+                                            </select>
+                                            <!--<label><input name="method_method_1" ng-model="api.reqtype" type="checkbox"-->
+                                            <!--ng-checked="get"> GET</label>-->
+                                            <!--<label><input name="method_method_2" ng-model="api.reqtype" type="checkbox"-->
+                                            <!--ng-checked="post"> POST</label>-->
+                                            <!--<label><input name="method_method_3" ng-model="api.reqtype" type="checkbox"-->
+                                            <!--ng-checked="put"> PUT</label>-->
+                                            <!--<label><input name="method_method_4" ng-model="api.reqtype" type="checkbox"-->
+                                            <!--ng-checked="delete "> DELETE</label>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <div class="methodurl">
+                                        <dl class="dl-horizontal" style="margin-bottom: 0px;">
+                                            <!--<dt>拟调用地址:</dt>-->
+                                            <!--<dd><span class="info_apimethod_url">http://openapi.shopex.cn/api/?method=af</span></dd>-->
+                                            <dt>后端地址:</dt>
+                                            <dd><span class="info_backend_url">
+                                                    {{model.backend_url == '' ? 'http://www.example.com/api/' : model.backend_url}}?
+                                                    {{model.method_dispatch_key == '' ? '参数名称' : model.method_dispatch_key}}=
+                                                    {{api.methodid == '' ? 'method_id' : api.methodid}}</span></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                        <span class="lnk">
+                                            <p class="active"
+                                               ng-click="taggleshowhide($event, 'api-data-' + $index)">
+                                                <i class="glyphicon glyphicon-chevron-down"></i>
+                                                详情</p>
+                                        </span>
+                                </div>
+                            </div>
+                            <div class="row api-data api-data-{{$index}}">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a
+                                                    ng-href="#tb{{$index}}_0"
+                                                    role="tab"
+                                                    data-toggle="tab">请求参数</a></li>
+                                        <li role="presentation"><a ng-href="#tb{{$index}}_1"
+                                                                   role="tab" data-toggle="tab">正常返回</a>
+                                        </li>
+                                        <li role="presentation"><a ng-href="#tb{{$index}}_2"
+                                                                   role="tab" data-toggle="tab">错误码</a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active form-horizontal"
+                                             id="tb{{$index}}_0">
+                                            <div class="row">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="10%">必填</th>
+                                                        <th width="20%">字段</th>
+                                                        <th width="40%">值类型</th>
+                                                        <th width="20%">字段描述</th>
+                                                        <th width="10%"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="rp in api.parameters">
+                                                        <td>
+                                                            <input class="text-line" type="checkbox"
+                                                                   ng-model="rp.required"
+                                                                   ng-checked="rp.required">
+                                                        </td>
+                                                        <td>
+                                                            <input class="text-line" type="text"
+                                                                   ng-model="rp.name">
+                                                        </td>
+                                                        <td>
+                                                            <select style="width:80px;" ng-model="rp.type">
+                                                                <option value="string">字符串</option>
+                                                                <option value="object">数据模型</option>
+                                                            </select>
+                                                            <input class="text-line" type="text"
+                                                                   ng-show="rp.type == 'string'"
+                                                                   ng-model="rp.default">
+                                                            <select ng-model="rp.schema.$ref" style="width: 120px;"
+                                                                    ng-show="rp.type == 'object'"
+                                                                    ng-options="'#/definitions/' + model.mdname as model.mdname for model in model.dtmodel">
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input class="text-line" type="text"
+                                                                   ng-model="rp.description">
+                                                        </td>
+                                                        <td class="operator">
+                                                            <i class="glyphicon glyphicon-remove-circle"
+                                                               ng-click="removeReqParams($index,$parent.$index)"></i>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div style="padding: 5px 8px;">
+                                                        <span class="lnk"
+                                                              ng-click="addReqParams($index)">添加参数</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane"
+                                             id="tb{{$index}}_1">
+                                            <!--<textarea name="method_response_1" style="height:220px"-->
+                                            <!--class="form-control " ng-model="api.res"></textarea>-->
+                                            选择数据模型:
+                                            <select ng-model="api.res" style="width: 120px;">
+                                                <!--ng-options="model.mdname as model.mdname for model in model.dtmodel">-->
+                                                <option ng-repeat="item in model.dtmodel" value="{{item.mdname}}">
+                                                    {{item.mdname}}
+                                                </option>
+                                                <option value="custom" default>自定义</option>
+                                            </select>
+                                            <span class="red" style="margin-left: 10px;">*请先创建数据模型后选择</span>
+                                            <textarea style="width: 100%;margin-top:8px;display: none"
+                                                      rows="8" class="form-control"
+                                                      ng-model="api.custom" ng-init="init($index)"></textarea>
+
+                                            <div id="textarea-{{$index}}"
+                                                 style="width: 100%; height: 300px;margin-top:8px;"
+                                                 ng-show="api.res == 'custom'"></div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane"
+                                             id="tb{{$index}}_2">
+                                            <div class="row">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="30%">错误码</th>
+                                                        <th width="45%">错误描述</th>
+                                                        <th width="10%"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="rp in api.responses">
+                                                        <td>
+                                                            <input class="text-line" type="text" ng-model="rp.code">
+                                                        </td>
+                                                        <td>
+                                                            <input class="text-line" type="text"
+                                                                   ng-model="rp.description"
+                                                                   style="width: 200px;">
+                                                        </td>
+                                                        <td class="operator">
+                                                            <i class="glyphicon glyphicon-remove-circle"
+                                                               ng-click="removeErrCode($index,$parent.$index)"></i>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div style="padding: 5px 8px;">
+                                                        <span class="lnk"
+                                                              ng-click="addErrCode($index)">添加参数</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9 col-md-offset-3">
+                                <a class="btn btn-primary btn-sm" ng-click="addApi()">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    添加新Api方法
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="subtitle">数据模型</h4>
+
+                    <div class="basicnifo">
+                        <div class="api-group ng-cloak" ng-repeat="md in model.dtmodel" ng-cloak>
+                            <div class="row">
+                                <div class="col-md-3">
+                                <span class="operator">
+                                    <i class="glyphicon glyphicon-remove-circle"
+                                       ng-click="removeModel()"></i>
+                                </span>
+                                    <label class="control-label">
+                                        <input type="text" class="form-control" placeholder="Model Id, 字母/数字"
+                                               ng-model="md.mdname">
+                                    </label>
+                                </div>
+                                <div class="col-md-9">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th width="">字段名</th>
+                                            <th width="120">类型</th>
+                                            <th width="120">示例值</th>
+                                            <th width="250">字段描述</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="tree">
+                                                    <tree-view-body tree-data="md.params" text-field="name"
+                                                                    value-field='id'
+                                                                    item-clicked="itembodyClicked($item,$event,flag,datasource)"
+                                                                    can-checked="true">
+                                                    </tree-view-body>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div style="padding: 5px 8px;">
+                                        <span class="lnk"
+                                              ng-click="addMdParams($index)">添加字段</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9 col-md-offset-3">
+                                <a class="btn btn-primary btn-sm" ng-click="addModel()">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    添加新数据模型
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="profile">
+                    <div id="jsoneditor" style="width: 100%; height: 600px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+<script type="text/javascript" src="/angular/angular.min.js"></script>
+<script type="text/javascript" src="/jsoneditor/dist/jsoneditor.min.js"></script>
+<script type="text/javascript" src="/js/directive.js"></script>
+<script type="text/javascript">
+
+    angular.module('app', ['directives'])
+            .controller('appCtrl', ['$scope', '$http', function ($scope, $http) {
+
+                var json2Array = function (data, array) {
+                    for (var i = 0; i < data.length; i++) {
+                        array.push({
+                            field: data[i].field,
+                            type: data[i].type,
+                            format: data[i].format,
+                            description: data[i].description
+                        })
+                        if (data[i].properties.length > 0) {
+                            json2Array(data[i].properties);
+                        }
+                    }
+                    return array;
+                }
+
+                //$scope.json2Array($scope.saveTree);
+                //console.log($scope.saveTreeArray)
+                // create the editor
+                var container = document.getElementById("jsoneditor");
+                var options = {
+                    mode: 'code',
+                    modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
+                    onError: function (err) {
+                        BootstrapDialog.show({
+                            title: '提示',
+                            message: "请检查输入的JSON数据,格式不对!23123132",
+                            type: BootstrapDialog.TYPE_DANGER
+                        });
+                    },
+                    onModeChange: function (newMode, oldMode) {
+                        console.log('Mode switched from', oldMode, 'to', newMode);
+                    }
+                };
+                $scope.editor = new JSONEditor(container, options);
+
+                var fd_serviceid = '<%= fd_serviceid %>';
+                $scope.model = {
+                    fd_serviceid: fd_serviceid,
+                    summary: '',
+                    method_dispatch_key: '',
+                    backend_url: '',
+                    sandbox_url: '',
+                    server_url: '',
+                    appnotice_url: '',
+                    backenddetailshow: false,
+                    configs: [],
+                    apis: [],
+                    dtmodel: []
+                };
+
+                $scope.init = function (index) {
+                    setTimeout(function () {
+                        var container = document.getElementById('textarea-' + index);
+                        var options = {
+                            index: index,
+                            mode: 'code',
+                            modes: ['code'], // allowed modes
+                            onError: function (err) {
+                                BootstrapDialog.show({
+                                    title: '提示',
+                                    message: "请检查输入的JSON数据,格式不对!23123132",
+                                    type: BootstrapDialog.TYPE_DANGER
+                                });
+                            },
+                            onChange: function (e) {
+                                try{
+                                    $scope.model.apis[index].custom = JSON.stringify($scope.model.apis[index].editor.get());
+                                }
+                                catch(e){
+
+                                }
+                            },
+                            onModeChange: function (newMode, oldMode) {
+                                console.log('Mode switched from', oldMode, 'to', newMode);
+                            }
+                        };
+                        $scope.model.apis[index]['editor'] = new JSONEditor(container, options);
+                        if ($scope.model.apis[index].res == 'custom') {
+                            $scope.model.apis[index]['editor'].set(JSON.parse($scope.model.apis[index].custom));
+                        }
+                        else {
+                            $scope.model.apis[index]['editor'].set({});
+                        }
+                    }, 1000);
+                }
+
+                $http.post("/my/api/getapi", JSON.stringify({fd_serviceid: fd_serviceid}))
+                        .success(function (result) {
+                            if (result.status == 0) {
+                                if (result.data[0].fd_config != '') {
+                                    $scope.model = $scope.dateformatToModel(JSON.parse(result.data[0].fd_config));
+                                }
+                            }
+                        });
+
+                $scope.taggleshowhide = function (e, name) {
+                    if ($('.' + name).is(':hidden')) {
+                        $('.' + name).show();
+                        $(e.target).find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                    }
+                    else {
+                        $('.' + name).hide();
+                        $(e.target).find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                    }
+                }
+                //添加配置项
+                $scope.addConfig = function () {
+                    $scope.model.configs.push({
+                        request_type: 'request',
+                        name: '',
+                        value_type: 'datetime',
+                        description: '',
+                        format: 'timestamp',
+                        value: ''
+                    })
+                }
+                //删除配置项
+                $scope.removeConfig = function (index) {
+                    $scope.model.configs.splice(index, 1);
+                }
+                //改变value_type
+                $scope.changeValueType = function (index) {
+                    switch ($scope.model.configs[index].value_type) {
+                        case "datetime":
+                            $scope.model.configs[index].format = "timestamp";
+                            $scope.model.configs[index].value = "";
+                            break;
+                        case "sign":
+                            $scope.model.configs[index].format = "prism";
+                            $scope.model.configs[index].value = "";
+                            break;
+                        case "expr":
+                            $scope.model.configs[index].format = "";
+                            break;
+                    }
+                }
+                //添加API
+                $scope.addApi = function () {
+                    $scope.model.apis.push({
+                        methodid: "",
+                        apiname: "",
+                        reqtype: ["post"],
+                        hide: false,
+                        parameters: [],
+                        res: "",
+                        custom: "", //自定义模式
+                        responses: []
+                    })
+                }
+                //删除API
+                $scope.removeApi = function (index) {
+                    $scope.model.apis.splice(index, 1);
+                }
+                //显示api明细
+                $scope.showApiDetail = function (index) {
+                    $scope.model.apis[index].hide = !$scope.model.apis[index].hide;
+                }
+                //添加请求参数
+                $scope.addReqParams = function (index) {
+                    $scope.model.apis[index].parameters.push({
+                        required: false,
+                        name: "",
+                        type: "",
+                        description: ""
+                    })
+                }
+                //删除请求参数
+                $scope.removeReqParams = function (index, pindex) {
+                    $scope.model.apis[pindex].parameters.splice(index, 1);
+                }
+                //添加异常返回
+                $scope.addErrCode = function (index) {
+                    $scope.model.apis[index].responses.push({
+                        code: "",
+                        description: ""
+                    })
+                }
+                //删除异常返回
+                $scope.removeErrCode = function (index, pindex) {
+                    $scope.model.apis[pindex].responses.splice(index, 1);
+                }
+                //添加数据模型
+                $scope.addModel = function () {
+                    $scope.model.dtmodel.push({
+                        mdname: "",
+                        params: []
+                    })
+                }
+                //删除数据模型
+                $scope.removeModel = function (index) {
+                    $scope.model.dtmodel.splice(index, 1);
+                }
+                //添加模型参数
+                $scope.addMdParams = function (index) {
+                    $scope.model.dtmodel[index].params.push({
+                        field: "",
+                        type: 'string',
+                        format: "",
+                        description: '',
+                        properties: []
+                    });
+                }
+                //模型参数
+                $scope.itembodyClicked = function ($item, $event, flag, datasource) {
+                    if (flag == 1) { //add
+                        if($item.type != 'object' && $item.type != 'array') {
+                            $item.type = "object";
+                        }
+                        $item.format = "";
+                        $item.properties.push({
+                            field: "",
+                            type: 'string',
+                            format: "",
+                            description: '',
+                            properties: []
+                        });
+                    }
+                    else if (flag == 2) { //delete
+                        find(datasource, $item.$$hashKey);
+                    }
+                    else if (flag == 3) { //展开
+                        var ele = $($event.target).siblings().last();
+                        if ($(ele).is(':hidden')) {
+                            $(ele).show();
+                            $($event.target).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+                        }
+                        else {
+                            $(ele).hide();
+                            $($event.target).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+                        }
+                    }
+                };
+                //深度遍历查找节点
+                var find = function (data, hashkey) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].$$hashKey == hashkey) {
+                            data.splice(i, 1);
+                            return;
+                        }
+                        find(data[i].properties, hashkey);
+                    }
+                }
+                //删除模型参数
+                $scope.removeMdParams = function (index, pindex) {
+                    $scope.model.dtmodel[pindex].params.splice(index, 1);
+                }
+                //tab切换
+                $scope.toggleTab = function (v) {
+                    switch (v) {
+                        case 1:
+                            try {
+                                var json = $scope.editor.get();
+                                $scope.model = $scope.dateformatToModel(json);
+                            }
+                            catch (e) {
+                                BootstrapDialog.show({
+                                    title: '提示',
+                                    message: "请检查输入的JSON数据,格式不对!",
+                                    type: BootstrapDialog.TYPE_DANGER
+                                });
+                            }
+                            break;
+                        case 2:
+                            //delete editor
+                            for (var i = 0; i < $scope.model.apis.length; i++) {
+                                delete $scope.model.apis[i].editor;
+                            }
+                            $scope.editor.set($scope.dataformat(JSON.parse(angular.toJson($scope.model))));
+                            break;
+                    }
+                }
+                $scope.validflag = false;
+                $scope.validvalue = true;
+                $scope.inputKeyDown = function () {
+                    $scope.validflag = false;
+                }
+                //校验数据
+                $scope.checkValidate = function (n, index) {
+                    if (!$scope.validflag) {
+                        return true;
+                    }
+                    var validate;
+                    switch (n) {
+                        case "summary":
+                        case "method_dispatch_key":
+                        case "backend_url":
+                        case "sandbox_url":
+                            if ($scope.model[n] == "" || $scope.model[n] == undefined) {
+                                validate = false;
+                            }
+                            else {
+                                validate = true;
+                            }
+                            break;
+                        case "checkConfig":
+                            if ($scope.model.configs[index].name == "" || $scope.model.configs[index].name == undefined) {
+                                validate = false;
+                            }
+                            else {
+                                validate = true;
+                            }
+                            break;
+                        case "checkmethodid":
+                            if ($scope.model.apis[index].methodid == "" || $scope.model.apis[index].methodid == undefined) {
+                                validate = false;
+                            }
+                            else {
+                                validate = true;
+                            }
+                            break;
+                        case "checkname":
+                            if ($scope.model.apis[index].name == "" || $scope.model.apis[index].name == undefined) {
+                                validate = false;
+                            }
+                            else {
+                                validate = true;
+                            }
+                            break;
+                    }
+                    $scope.validvalue = $scope.validate && validate;
+                    return validate;
+                }
+                $scope.validate = function (callback) {
+                    setTimeout(function () {
+                        return callback($scope.validvalue)
+                    }, 500)
+                }
+                var showAlert = function () {
+                    BootstrapDialog.show({
+                        title: '提示',
+                        message: "请检查表单数据!",
+                        type: BootstrapDialog.TYPE_DANGER
+                    });
+                }
+                $scope.save = function () {
+                    //校验表单
+                    $scope.validflag = true;
+
+                    $scope.validate(function (v) {
+                        if (!v) {
+                            showAlert();
+                            return;
+                        }
+                        else {
+                            var data = {
+                                fd_serviceid: $scope.model.fd_serviceid,
+                                fd_config: angular.toJson($scope.dataformat($scope.model))
+                            }
+                            if ($('.tab-nav li.active a').attr('href') == '#profile') {
+                                data.fd_config = angular.toJson($scope.editor.get());
+                            }
+
+                            $http.post('/my/api/save', JSON.stringify(data))
+                                    .success(function (result) {
+                                        if (result.status == 0) {
+                                            BootstrapDialog.show({
+                                                title: '提示',
+                                                message: result.message,
+                                                type: BootstrapDialog.TYPE_SUCCESS,
+                                                onshow: function (dialogRef) {
+                                                    setTimeout(function () {
+                                                        dialogRef.close();
+                                                    }, 1000);
+                                                }
+                                            });
+                                        }
+                                    })
+                        }
+                    })
+                }
+                //数据转换 -- model2swagger
+                $scope.dataformat = function (data) {
+                    var obj = {
+                        //fd_serviceid: fd_serviceid,
+                        info: {
+                            title: data.summary
+                        },
+                        backend_url: data.backend_url,
+                        sandbox_url: data.sandbox_url,
+                        server_url: data.server_url,
+                        appnotice_url: data.appnotice_url,
+                        global: {
+                            params: data.configs,
+                            back_request_way: {
+                                request_mode: "param",
+                                request_method_name: data.method_dispatch_key
+                            }
+                        },
+                        paths: {},
+                        definitions: {}
+                    };
+                    for (var i = 0; i < data.apis.length; i++) {
+                        obj.paths[data.apis[i].methodid] = {};
+                        for (var j = 0; j < data.apis[i].reqtype.length; j++) {
+
+                            obj.paths[data.apis[i].methodid][data.apis[i].reqtype[j]] = {
+                                //summary: data.apis[i].apiname,
+                                description: data.apis[i].apiname,
+                                parameters: data.apis[i].parameters,
+                                //tags: [],
+                                //res: data.apis[i].res,
+                                //doc: data.apis[i].doc,
+                                responses: {
+                                    success: {
+                                        schema: {
+                                            "$ref": "#/definitions/" + data.apis[i].res
+                                        }
+                                    },
+                                    errorcode: {}
+                                }
+                            }
+                            if (data.apis[i].res == 'custom') {
+                                obj.paths[data.apis[i].methodid][data.apis[i].reqtype[j]]['responses'] = {
+                                    success: {
+                                        default: data.apis[i].custom
+                                    },
+                                    errorcode: {}
+                                }
+                            }
+                            for (var k = 0; k < data.apis[i].responses.length; k++) {
+                                obj.paths[data.apis[i].methodid][data.apis[i].reqtype[j]].responses.errorcode[data.apis[i].responses[k].code] = {
+                                    description: data.apis[i].responses[k].description
+                                }
+                            }
+                        }
+                    }
+                    for (var i = 0; i < data.dtmodel.length; i++) {
+                        obj.definitions[data.dtmodel[i].mdname] = {
+                            type: 'object',
+                            properties: {}
+                        }
+                        diguipararms(data.dtmodel[i].params, null, obj.definitions[data.dtmodel[i].mdname].properties)
+                    }
+                    function diguipararms(params, type, tjson) {
+                        for (var i = 0; i < params.length; i++) {
+                            tjson[(type == 'array' && type != null) ? i : params[i].field] = {
+                                type: params[i].type,
+                                description: params[i].description,
+                                format: params[i].format,
+                                properties: {}
+                            }
+                            diguipararms(params[i].properties, params[i].type, tjson[(type == 'array' && type != null) ? i : params[i].field].properties);
+                        }
+                    }
+
+                    return obj;
+                }
+                //数据转换 -- swagger2model
+                $scope.dateformatToModel = function (data) {
+                    var tmodel = {
+                        fd_serviceid: '<%= fd_serviceid %>',
+                        summary: data.info.title,
+                        method_dispatch_key: data.global.back_request_way.request_method_name,
+                        backend_url: data.backend_url,
+                        sandbox_url: data.sandbox_url,
+                        server_url: data.server_url,
+                        appnotice_url: data.appnotice_url,
+                        backenddetailshow: data.backenddetailshow,
+                        configs: data.global.params,
+                        apis: [],
+                        dtmodel: []
+                    }
+                    for (var item in data.paths) {
+                        var tjson = {};
+                        tjson.methodid = item;
+                        tjson.reqtype = [];
+                        for (var rp in data.paths[item]) {
+                            tjson.apiname = data.paths[item][rp].description;
+                            tjson.reqtype.push(rp);
+                            tjson.parameters = [];
+                            tjson.responses = [];
+                            if (typeof data.paths[item][rp].responses.success.default != 'undefined') {
+                                tjson.custom = data.paths[item][rp].responses.success.default;
+                                tjson.res = 'custom';
+                            }
+                            else {
+                                tjson.res = data.paths[item][rp].responses.success.schema['$ref'].split('/definitions/')[1];
+                                tjson.custom = '';
+                            }
+                            //tjson.doc = data.paths[item][rp].doc;
+                            for (var i = 0; i < data.paths[item][rp].parameters.length; i++) {
+                                tjson.parameters.push(data.paths[item][rp].parameters[i]);
+                            }
+                            for (var res in data.paths[item][rp].responses.errorcode) {
+                                tjson.responses.push({
+                                    code: res,
+                                    description: data.paths[item][rp].responses.errorcode[res].description
+                                })
+                            }
+                        }
+                        tmodel.apis.push(tjson);
+                    }
+                    for (var item in data.definitions) {
+                        var tjson = {};
+                        tjson.mdname = item;
+                        tjson.params = [];
+                        digui(data.definitions[item].properties, tjson.params);
+                        tmodel.dtmodel.push(tjson);
+                    }
+                    function digui(data, params) {
+                        for (var dd in data) {
+                            params.push({
+                                field: dd,
+                                type: data[dd].type,
+                                format: data[dd].format,
+                                description: data[dd].description,
+                                properties: []
+                            })
+                            digui(data[dd].properties, params[params.length - 1].properties);
+                        }
+                    }
+
+                    return tmodel;
+                }
+            }]);
+
+</script>

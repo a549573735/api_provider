@@ -1,0 +1,17 @@
+/*!
+   Important comments included in minified output.
+*/
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.logo{
+  width: 48px;
+  background: url(../images/favicon.ico)no-repeat;
+  height: 48px;
+}

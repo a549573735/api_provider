@@ -1,0 +1,30 @@
+<% include ../common/header.ejs %>
+<div class="container container-body">
+    <div class="row">
+        <div class="docs-left">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active api-list-all">
+                    <a href="/apis">消息列表</a>
+                </li>
+            </ul>
+        </div>
+        <div class="docs-right apis-list">
+            <table class="table table-bordered table-hover">
+                <% msgs.forEach(function(msg) { %>
+                <tr>
+                    <td>
+                        <a href="msg/db/<%= msg.fd_serviceid %>"><%= msg.fd_name %></a>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+
+<script type="text/javascript">
+    $(function () {
+
+    });
+</script>

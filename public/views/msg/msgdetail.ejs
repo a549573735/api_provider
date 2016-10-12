@@ -1,0 +1,189 @@
+<% include ../common/header.ejs %>
+<style type="text/css">
+    .desc {
+        color: #B9B9B9;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    #main-container .api-package {
+        display: none;
+    }
+    #main-container .api-package.active {
+        display: block !important;
+    }
+
+    dd {
+        margin-top: 15px;
+    }
+
+    ul.ul-tree {
+        list-style: none;
+        padding-left: 20px;
+        margin-bottom: 0px;
+    }
+
+    ul.ul-tree li span {
+        display: inline-block;
+        padding: 5px;
+    }
+
+    .table-td-tree > ul {
+        padding-left: 0px;
+    }
+
+    .table-td-tree > ul > li:first-child {
+        background-color: #F5F5F5;
+
+    }
+
+    .li-right {
+        float: right;
+    }
+
+    .table-td-tree > ul.ul-tree > li:first-child > span > span.first-node {
+        visibility: hidden;
+    }
+
+    .first-node {
+        padding: 0px !important;
+    }
+
+    .ul-tree i {
+        cursor: pointer;
+    }
+</style>
+<link type="text/css" rel="stylesheet" href="/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+<div class="container container-body">
+    <div class="row" style="padding-top: 20px;">
+        <div class="docs-left">
+            <h3 class="menu-title" style="margin-top: 0px;"><%= servicename %></h3>
+            <ul class="nav nav-pills nav-stacked" style="background-color: #F3F3F3;">
+
+                <% var i = 0; %>
+                <% msgs.forEach(function(msg) { %>
+                <li class="<%= msg.fd_name == msgname ? 'active' : '' %>">
+                    <a href="javascript:void(0)" data-index="<%= i %>">
+                        <%= msg.fd_name %><br>
+                        <span style="font-size: 12px"><%= msg.fd_description %></span>
+                    </a>
+                </li>
+                <% i = i + 1; %>
+                <% }) %>
+            </ul>
+        </div>
+        <div id="main-container" class="docs-right apis-list">
+            <% var i = 0; %>
+            <% msgs.forEach(function(msg) { %>
+            <div class="api-package <%= msg.fd_name == msgname ? 'active' : '' %>" style="margin-top: 0;" id="package<%= i %>">
+                <div class="mtl">
+                    <h4 class="mtl-main" style="margin-top: 0px;"><%= msg.fd_name %><span
+                                class="desc">(<%= msg.fd_description %>)</span></h4>
+
+                    <!--<p class="mtl-desc">提供了用户基本信息查询功能-->
+                    <!--</p>-->
+                </div>
+                <div class="doc-detail-bd J_apiDetailBd">
+
+                    <h1 id="s1"><i class="glyphicon glyphicon-triangle-bottom"></i>消息内容</h1>
+
+                    <div class="J_sCon">
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th width="80">是否必须</th>
+                                <th width="120">类型</th>
+                                <th width="120">示例值</th>
+                                <th width="268">字段描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <% for(var item in msg.config) {%>
+                            <tr>
+                                <% if(msg.config[item].type == 'object') { %>
+                                <td><i class="fa fa-minus-square-o req-extend"
+                                       style="margin-right: 5px; cursor: pointer;"></i><%= item %></td>
+                                <% } else { %>
+                                <td style="padding-left: 23px !important;"><%= item %></td>
+                                <% } %>
+                                <td><%= msg.config[item].required ? "是" : "否" %></td>
+                                <td><%= msg.config[item].type %></td>
+                                <td><%= msg.config[item].default %></td>
+                                <td><%= msg.config[item].description %></td>
+                            </tr>
+                            <% if(msg.config[item].type == 'object') { %>
+                            <tr>
+                                <td colspan="5">
+                                    <%- brushResponesTable_Msg(msg.config[item]) %>
+                                </td>
+                            </tr>
+                            <% } %>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h1 id="s2"><i class="glyphicon glyphicon-triangle-bottom"></i>消息结构</h1>
+
+                    <div class="J_sCon">
+                        <pre class="brush:js"><%= brushRespones_Msg(JSON.parse(msg.fd_config)) %></pre>
+                    </div>
+
+                </div>
+            </div>
+            <% i = i + 1; %>
+            <% }) %>
+        </div>
+
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+<script src="/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script src="/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.nav.nav-pills a').on('click', function () {
+            $('.nav.nav-pills li').removeClass('active');
+            $(this).parent().addClass('active');
+            $('.api-package').removeClass('active').hide();
+            $('#package' + $(this).data('index')).show();
+        })
+
+        SyntaxHighlighter.defaults['toolbar'] = false;
+        SyntaxHighlighter.all();
+
+        $('.doc-detail-bd.J_apiDetailBd h1').on('click', function () {
+            if ($(this).next().is(':hidden')) {
+                $(this).next().slideDown();
+                $(this).find('i').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+            }
+            else {
+                $(this).next().slideUp();
+                $(this).find('i').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+            }
+        });
+
+        $('.ul-tree').find('i').on('click', function () {
+            open(this);
+        });
+
+        $('.req-extend').on('click', function () {
+            open(this);
+        })
+
+        function open(e){
+            var ele = $(e).parent().parent().next();
+            if (ele.is(':hidden')) {
+                ele.show();
+                $(e).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+            }
+            else {
+                ele.hide();
+                $(e).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+            }
+        }
+
+    });
+</script>

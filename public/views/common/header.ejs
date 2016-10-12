@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopex开放平台</title>
+
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bootstrap-dialog/dist/css/bootstrap-dialog.min.css" />
+    <link rel="stylesheet" href="/font-awesome-4.6.3/css/font-awesome.css" />
+    <link rel="stylesheet" href="/css/topbar.css" />
+
+    <!--build:css stylesheets/wapmain.min.css -->
+    <link rel='stylesheet' href='/css/main.css' />
+    <link rel="stylesheet" href="/css/font.css" />
+    <!--/build-->
+    <style>
+        .cic-topbar{
+            background: #f4f4f4;
+        }
+        .cic-topbar span,.cic-topbar a{
+            color: #313131 !important;
+        }
+        .cic-topbar .cic-icon{
+            color:#e1872c;
+        }
+
+        /* 单独定义每个图标颜色 */
+        .cic-topbar .icon-logout { color:#e1872c; }
+        .cic-topbar .icon-user { color:#e1872c; }
+        .cic-topbar .icon-mobile { color:#e1872c; }
+        .cic-topbar .icon-chat { color:#e1872c; }
+        .cic-topbar .icon-register { color:#e1872c; }
+        .cic-topbar .icon-faq { color:#e1872c; }
+        .cic-topbar .icon-service { color:#e1872c; }
+        .cic-topbar .icon-api { color:#e1872c; }
+    </style>
+</head>
+<body>
+<% include ../../../webshare/html/topbar.html %>
+
+<div class="header">
+    <div class="container top-openplatform-nav">
+        <div class="login-container">
+            <a>
+                天工开放平台
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-menu">
+            <li class="<%= nav == 'api' ? 'active' : '' %>"><a href="/apis">API</a></li>
+            <li >
+                <a href="javascript:void(0);">文档中心<i class="icon iconfont icon-sign-down arrow" style="font-size: 1.2rem;height: 12px;margin-left: 2px;"></i></a>
+                <div class="sub-nav">
+                    <ul>
+                        <li>
+                            <dl>
+                                <dd><a href="javascript:void(0);" title="">文档目录</a></dd>
+                                <dd><a href="/apis" title="" >API文档</a></dd>
+                                <dd><a href="/msg" title="">消息文档</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <!--<li ><a href="javascript:void(0);">开发者手册</a></li>-->
+            <li class="<%= nav == 'service' ? 'active' : '' %>"><a href="/my/app">我的服务</a></li>
+        </ul>
+    </div>
+</div>
+<div class="navlist">
+    <div class="container top-openplatform-nav">
+        <div class="crumbs">
+            <% navs.forEach(function(nav){ %>
+            <% if(nav.url != null) { %>
+            <a href="<%= nav.url %>">
+                <%= nav.name %>
+            </a> &gt;
+            <% } else { %>
+            <%= nav.name %>
+            <% } %>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+

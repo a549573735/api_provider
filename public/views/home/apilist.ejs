@@ -1,0 +1,50 @@
+<% include ../common/header.ejs %>
+<div class="container container-body">
+    <div class="row" style="padding-top: 20px;">
+        <div class="docs-left">
+            <h3 class="menu-title" style="margin-top: 0px;">API类目</h3>
+            <ul class="nav nav-pills nav-stacked" style="margin: 5px 0px;">
+                <% list.forEach(function(ls) { %>
+                <li class="<%= ls.fd_serviceid == serviceid ? 'active' : '' %>">
+                    <a href="/apis/db/<%= ls.fd_serviceid %>"><%= ls.fd_name %></a>
+                </li>
+                <% }) %>
+            </ul>
+        </div>
+        <div class="docs-right apis-list">
+            <div class="mtl">
+                <h3 class="mtl-main" style="margin-top: 0px;"><%= servicename %></h3>
+                <!--<p class="mtl-desc">提供了用户基本信息查询功能</p>-->
+            </div>
+            <table class="table table-bordered table-hover api-table">
+                <thead>
+                    <tr>
+                        <td width="35%">API列表</td><td width="15%">请求方式</td><td width="50%">描述</td>
+                    </tr>
+                </thead>
+                <tbody>
+                <% for(var item in service.paths) { %>
+                <% for(var api in service.paths[item]) {%>
+                <tr>
+                    <td><a href="/apis/detail/<%= serviceid %>?api=<%= item %>" style="cursor: pointer;"><%= item %></a></td>
+                    <td>
+                        <%= api %>
+                    </td>
+                    <td>
+                        <%= service.paths[item][api].description %>
+                    </td>
+                </tr>
+                <% } %>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+
+<script type="text/javascript">
+    $(function () {
+
+    });
+</script>

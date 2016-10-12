@@ -1,0 +1,317 @@
+<% include ../common/header.ejs %>
+<style type="text/css">
+    .desc {
+        color: #B9B9B9;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    #main-container .api-package {
+        display: none;
+    }
+    #main-container .api-package.active {
+        display: block !important;
+    }
+
+    dd {
+        margin-top: 15px;
+    }
+
+    ul.ul-tree {
+        list-style: none;
+        padding-left: 20px;
+        margin-bottom: 0px;
+    }
+
+    ul.ul-tree li span {
+        display: inline-block;
+        padding: 5px;
+    }
+
+    .table-td-tree > ul {
+        padding-left: 0px;
+    }
+
+    .table-td-tree > ul > li:first-child {
+        background-color: #F5F5F5;
+
+    }
+
+    .li-right {
+        float: right;
+    }
+
+    .table-td-tree > ul.ul-tree > li:first-child > span > span.first-node {
+        visibility: hidden;
+    }
+
+    .first-node {
+        padding: 0px !important;
+    }
+
+    .ul-tree i {
+        cursor: pointer;
+    }
+</style>
+<link type="text/css" rel="stylesheet" href="/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+<div class="container container-body">
+    <div class="row" style="padding-top: 20px;">
+        <div class="docs-left">
+            <h3 class="menu-title" style="margin-top: 0px;">用户API</h3>
+            <ul class="nav nav-pills nav-stacked" style="background-color: #F3F3F3;">
+
+                <% var i = 0; %>
+                <% for(var item in service.paths) { %>
+                <% for(var api in service.paths[item]) { %>
+                <li class="<%= item == rapi ? 'active' : '' %>">
+                    <a href="javascript:void(0)" data-index="<%= i %>">
+                        <%= item %><br>
+                        <span style="font-size: 12px"><%= service.paths[item][api].description %></span>
+                    </a>
+                </li>
+                <% i = i + 1; %>
+                <% } %>
+                <% } %>
+            </ul>
+        </div>
+        <div id="main-container" class="docs-right apis-list">
+            <% var i = 0; %>
+            <% for(var item in service.paths) { %>
+            <% for(var api in service.paths[item]) { %>
+            <div class="api-package <%= item == rapi ? 'active' : '' %>" style="margin-top: 0;" id="package<%= i %>">
+                <div class="mtl">
+                    <h4 class="mtl-main" style="margin-top: 0px;"><%= item %><span
+                                class="desc">(<%= service.paths[item][api].description %>)</span></h4>
+
+                    <!--<p class="mtl-desc">提供了用户基本信息查询功能-->
+                    <!--</p>-->
+                </div>
+                <div class="doc-detail-bd J_apiDetailBd">
+                    <h1 id="s0"><i class="glyphicon glyphicon-triangle-bottom"></i>公共参数</h1>
+
+                    <div class="J_sCon">
+                        <dd>请求地址：</dd>
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th width="20%">环境</th>
+                                <th width="40%">HTTP请求地址</th>
+                                <th width="40%">HTTPS请求地址</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>正式环境</td>
+                                <td><%= app_gateway_online_http %></td>
+                                <td><%= app_gateway_online_https %></td>
+                            </tr>
+                            <tr>
+                                <td>沙箱环境</td>
+                                <td><%= app_gateway_sndbox_http %></td>
+                                <td><%= app_gateway_sndbox_https %></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <dd>公共请求参数：</dd>
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th width="18%">名称</th>
+                                <th width="10%">类型</th>
+                                <th width="15%">是否必须</th>
+                                <th>描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>method</td>
+                                <td>String</td>
+                                <td>是</td>
+                                <td>方法名</td>
+                            </tr>
+                            <tr>
+                                <td>client_id</td>
+                                <td>String</td>
+                                <td>是</td>
+                                <td>客户端id</td>
+                            </tr>
+                            <tr>
+                                <td>sign_time</td>
+                                <td>String</td>
+                                <td>是</td>
+                                <td>签名时间</td>
+                            </tr>
+                            <tr>
+                                <td>sign</td>
+                                <td>String</td>
+                                <td>是</td>
+                                <td>签名</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h1 id="s1"><i class="glyphicon glyphicon-triangle-bottom"></i>请求参数</h1>
+
+                    <div class="J_sCon">
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th width="80">是否必须</th>
+                                <th width="120">类型</th>
+                                <th width="120">示例值</th>
+                                <th width="268">字段描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% service.paths[item][api].parameters.forEach(function(param){ %>
+                            <tr>
+                                <% if(param.type == 'object') { %>
+                                <td><i class="fa fa-minus-square-o req-extend"
+                                       style="margin-right: 5px; cursor: pointer;"></i><%= param.name %></td>
+                                <% } else { %>
+                                <td style="padding-left: 23px !important;"><%= param.name %></td>
+                                <% } %>
+                                <td><%= param.required ? "是" : "否" %></td>
+                                <td><%= param.type %></td>
+                                <td><%= param.default %></td>
+                                <td><%= param.description %></td>
+                            </tr>
+                            <% if(param.type == 'object') { %>
+                            <tr>
+                                <td colspan="5">
+                                    <%- brushResponesTable(param, service.definitions) %>
+                                </td>
+                            </tr>
+                            <% } %>
+                            <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <% if(typeof service.paths[item][api].responses.success.default == 'undefined'){ %>
+                    <h1 id="s2"><i class="glyphicon glyphicon-triangle-bottom"></i>响应参数</h1>
+
+                    <div class="J_sCon">
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>字段</th>
+                                <th width="120">类型</th>
+                                <th width="120">示例值</th>
+                                <th width="255">字段描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4" class="table-td-tree" style="padding: 0px !important;">
+                                    <% if( typeof  service.paths[item][api].responses.success != 'undefined') { %>
+                                    <%- brushResponesTable(service.paths[item][api].responses.success, service.definitions) %>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+
+                    <% if(typeof service.paths[item][api].responses.success.default == 'undefined'){ %>
+                    <h1 id="s3"><i class="glyphicon glyphicon-triangle-bottom"></i>响应示例</h1>
+                    <% } else { %>
+                    <h1 id="s3"><i class="glyphicon glyphicon-triangle-bottom"></i>响应示例(自定义结构)</h1>
+                    <% } %>
+
+                    <div class="J_sCon">
+                        <% if( typeof  service.paths[item][api].responses.success != 'undefined') { %>
+                        <% if(typeof service.paths[item][api].responses.success.default == 'undefined'){ %>
+                        <pre class="brush:js"><%= brushRespones(service.paths[item][api].responses.success, service.definitions) %></pre>
+                        <% } else { %>
+                        <pre class="brush:js"><%= JSON.stringify(JSON.parse(service.paths[item][api].responses.success.default), null, 2) %></pre>
+                        <% } %>
+                        <% } %>
+                    </div>
+                    <h1 id="s4"><i class="glyphicon glyphicon-triangle-bottom"></i>异常返回</h1>
+
+                    <div class="J_sCon">
+                        <table border="1" cellpadding="0" cellspacing="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th width="25%">错误码</th>
+                                <th width="25%">错误描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var code in service.paths[item][api].responses.errorcode ){ %>
+                            <tr>
+                                <td><%= code %></td>
+                                <td><%= service.paths[item][api].responses.errorcode[code].description %></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h1 id="s5"><i class="glyphicon glyphicon-triangle-bottom"></i>API工具</h1>
+
+                    <div class="J_sCon">
+                        <a href="/apitools?serviceid=<%= serviceid %>&apiName=<%= item %>" target="_blank" class="btn apitools" style="text-decoration: none !important;">API测试工具</a>
+                    </div>
+                </div>
+            </div>
+            <% i = i + 1; %>
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+<script src="/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script src="/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<!--<script src="/syntaxhighlighter_3.0.83/scripts/shBrushJava.js"></script>-->
+<!--<script src="/syntaxhighlighter_3.0.83/scripts/shBrushPhp.js"></script>-->
+<script type="text/javascript">
+    $(function () {
+        $('.nav.nav-pills a').on('click', function () {
+            $('.nav.nav-pills li').removeClass('active');
+            $(this).parent().addClass('active');
+            $('.api-package').removeClass('active').hide();
+            $('#package' + $(this).data('index')).show();
+        })
+
+        SyntaxHighlighter.defaults['toolbar'] = false;
+        SyntaxHighlighter.all();
+
+        $('.doc-detail-bd.J_apiDetailBd h1').on('click', function () {
+            if ($(this).next().is(':hidden')) {
+                $(this).next().slideDown();
+                $(this).find('i').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+            }
+            else {
+                $(this).next().slideUp();
+                $(this).find('i').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+            }
+        });
+
+        $('.ul-tree').find('i').on('click', function () {
+            open(this);
+        });
+
+        $('.req-extend').on('click', function () {
+            open(this);
+        })
+
+        function open(e){
+            var ele = $(e).parent().parent().next();
+            if (ele.is(':hidden')) {
+                ele.show();
+                $(e).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+            }
+            else {
+                ele.hide();
+                $(e).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+            }
+        }
+
+    });
+</script>

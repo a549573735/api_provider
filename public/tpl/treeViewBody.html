@@ -1,0 +1,3 @@
+<ul class="tree-view-body table-tree" style="min-width: 300px;padding-left: 0px;">
+    <li ng-repeat="item in treeData" data-type="{{getType(item)}}" class="first-ele" ng-include="itemTemplateUrl || '/tpl/treeItemBody.html'"  data-index="{{$index}}"></li>
+</ul>

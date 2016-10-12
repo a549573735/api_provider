@@ -1,0 +1,313 @@
+<% include ../common/header.ejs %>
+<style type="text/css">
+    @charset "UTF-8";
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+        display: none !important;
+    }
+
+    ng\:form {
+        display: block;
+    }
+
+    .ng-animate-start {
+        clip: rect(0, auto, auto, 0);
+        -ms-zoom: 1.0001;
+    }
+
+    .ng-animate-active {
+        clip: rect(-1px, auto, auto, 0);
+        -ms-zoom: 1;
+    }
+
+    .config-data, .api-data {
+        display: none;
+    }
+
+    .cu-table th, .cu-table td {
+        border-top: 0px !important;
+    }
+
+    .cu-table th {
+        padding: 0px !important;
+    }
+
+    .cu-table td {
+        padding: 5px 0px !important;
+    }
+
+    .table-tree {
+        list-style: none;
+    }
+
+    .text-field {
+        padding: 5px 0px;
+        line-height: 21px;
+    }
+
+    .abc {
+        float: right;
+    }
+
+    li.first-ele > .line {
+        visibility: hidden;
+    }
+
+    input[disabled='disabled'] {
+        background-color: #F3F3F3;
+        color: #cdcdcd;
+    }
+
+    .methodurl {
+        background: #FCF2F2;
+        border-left: 5px solid #DDB5B3;
+        padding: 5px 10px;
+        margin: 5px 0 10px 0;
+    }
+
+</style>
+<div class="container container-body" ng-app="app" ng-controller="appCtrl">
+    <div class="row">
+        <div class="api-editor" id="apiobj">
+            <a class="btn btn-primary" ng-click="save()" style="float: right;">
+                <i class="glyphicon glyphicon-floppy-disk"></i>
+                保存
+            </a>
+
+            <div role="tabpanel" class="tab-content tab-pane active form-horizontal" id="home">
+                <h4 class="subtitle">消息模型</h4>
+
+                <div class="basicnifo">
+                    <div class="row ">
+                        <div class="col-md-3">
+                            <label class="control-label">消息名称</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input name="fd_name" value="" class="form-control" required type="text"
+                                   placeholder="消息名称"
+                                   style="width: 250px;display: inline-block;"
+                                   ng-blur="checkname()"
+                                   ng-model="model.fd_name" ng-cloak>
+                            <span class="fd_name-error-info error-info"></span>
+                        </div>
+                    </div>
+                    <div class="row  ">
+                        <div class="col-md-3">
+                            <label class="control-label">描述</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input name="fd_description" value="" class="form-control" required type="text"
+                                   placeholder="描述"
+                                   style="width: 250px;" ng-model="model.fd_description" ng-cloak>
+                        </div>
+                    </div>
+                    <div class="row  ">
+                        <div class="col-md-3">
+                            <label class="control-label">消息内容</label>
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th width="">字段名</th>
+                                    <th width="130">必填</th>
+                                    <th width="120">类型</th>
+                                    <th width="120">示例值</th>
+                                    <th width="250">字段描述</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="tree">
+                                            <tree-view-body-msg tree-data="model.dtmodel"
+                                                                text-field="name"
+                                                                value-field='id'
+                                                                item-clicked="itembodyClicked($item,$event,flag,datasource)"
+                                                                can-checked="true">
+                                            </tree-view-body-msg>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div style="padding: 5px 8px;">
+                                        <span class="lnk"
+                                              ng-click="addMdParams()">添加字段</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+<script type="text/javascript" src="/angular/angular.min.js"></script>
+<script type="text/javascript" src="/jsoneditor/dist/jsoneditor.min.js"></script>
+<script type="text/javascript" src="/js/directive.js"></script>
+<script type="text/javascript">
+    angular.module('app', ['directives'])
+            .controller('appCtrl', ['$scope', '$http', function ($scope, $http) {
+                var fd_config = <%- fd_config %>;
+
+                //数据转换 -- swagger2model
+                $scope.dateformatToModel = function (data) {
+                    var tmodel = []
+                    digui(data, tmodel);
+                    function digui(data, params) {
+                        for (var dd in data) {
+                            params.push({
+                                field: dd,
+                                type: data[dd].type,
+                                format: data[dd].format,
+                                required: data[dd].required,
+                                description: data[dd].description,
+                                properties: []
+                            })
+                            digui(data[dd].properties, params[params.length - 1].properties);
+                        }
+                    }
+
+                    return tmodel;
+                }
+
+                $scope.model = {
+                    fd_id: '<%= fd_id %>',
+                    fd_serviceid: '<%= fd_serviceid %>',
+                    fd_name: '<%= fd_name %>',
+                    fd_description: '<%= fd_description %>',
+                    dtmodel: $scope.dateformatToModel(fd_config)
+                };
+
+                $scope.addMdParams = function () {
+                    $scope.model.dtmodel.push({
+                        field: "",
+                        type: 'string',
+                        format: "",
+                        required: true,
+                        description: '',
+                        properties: []
+                    });
+                }
+
+                $scope.itembodyClicked = function ($item, $event, flag, datasource) {
+                    if (flag == 1) { //add
+                        if ($item.type != 'object' && $item.type != 'array') {
+                            $item.type = "object";
+                        }
+                        $item.format = "";
+                        $item.properties.push({
+                            field: "",
+                            type: 'string',
+                            format: "",
+                            required: true,
+                            description: '',
+                            properties: []
+                        });
+                    }
+                    else if (flag == 2) { //delete
+                        find(datasource, $item.$$hashKey);
+                    }
+                    else if (flag == 3) { //展开
+                        var ele = $($event.target).siblings().last();
+                        if ($(ele).is(':hidden')) {
+                            $(ele).show();
+                            $($event.target).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+                        }
+                        else {
+                            $(ele).hide();
+                            $($event.target).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+                        }
+                    }
+                };
+
+                //深度遍历查找节点
+                var find = function (data, hashkey) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].$$hashKey == hashkey) {
+                            data.splice(i, 1);
+                            return;
+                        }
+                        find(data[i].properties, hashkey);
+                    }
+                }
+
+                //校验消息名称是否重复
+                $scope.checkname = function () {
+                    if ($scope.model.fd_name == "") {
+                        $('.fd_name-error-info').html('消息名称不能为空!').show();
+                        $('input[name="fd_name"]').addClass('error');
+                        return false;
+                    }
+                    else{
+                        return true;
+                    }
+                }
+
+
+                $scope.save = function () {
+                    //校验表单
+                    if ($scope.checkname()) {
+                        var data = {
+                            fd_id: $scope.model.fd_id,
+                            fd_name: $scope.model.fd_name,
+                            fd_serviceid: $scope.model.fd_serviceid,
+                            fd_description: $scope.model.fd_description,
+                            fd_config: angular.toJson($scope.dataformat($scope.model))
+                        }
+
+                        $http.post('/my/msg/update', JSON.stringify(data))
+                                .success(function (result) {
+                                    if (result.status == 0) {
+                                        BootstrapDialog.show({
+                                            title: '提示',
+                                            message: result.message,
+                                            type: BootstrapDialog.TYPE_SUCCESS,
+                                            onshow: function (dialogRef) {
+                                                setTimeout(function () {
+                                                    dialogRef.close();
+                                                }, 1000);
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        BootstrapDialog.show({
+                                            title: '提示',
+                                            message: JSON.stringify(result.message),
+                                            type: BootstrapDialog.TYPE_DANGER,
+                                            onshow: function (dialogRef) {
+                                                setTimeout(function () {
+                                                    dialogRef.close();
+                                                }, 1000);
+                                            }
+                                        });
+                                    }
+                                });
+                    }
+                }
+
+                //数据转换 -- model2swagger
+                $scope.dataformat = function (data) {
+                    var obj = {};
+                    diguipararms(data.dtmodel, null, obj);
+
+                    function diguipararms(params, type, tjson) {
+                        for (var i = 0; i < params.length; i++) {
+                            tjson[(type == 'array' && type != null) ? i : params[i].field] = {
+                                type: params[i].type,
+                                description: params[i].description,
+                                format: params[i].format,
+                                required: params[i].required,
+                                properties: {}
+                            }
+                            diguipararms(params[i].properties, params[i].type, tjson[(type == 'array' && type != null) ? i : params[i].field].properties);
+                        }
+                    }
+
+                    return obj;
+                }
+
+
+            }])
+</script>

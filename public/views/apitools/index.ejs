@@ -1,0 +1,158 @@
+<% include ../common/header.ejs %>
+<style type="text/css">
+    .parameters td {
+        padding: 8px 0px;;
+    }
+</style>
+<div class="container container-body">
+    <div class="row">
+        <table width="100%">
+            <tr>
+                <td class="col-md-6" valign="top">
+                    <table class="parameters" width="500" border="0" cellpadding="4" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td width="160" align="right">返回格式(Format)：</td>
+                            <td width="340">
+                                <select id="format" name="format" style="width:195px;">
+                                    <option value="xml">XML</option>
+                                    <option value="json">JSON</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">API类目(API Category)：</td>
+                            <td>
+                                <select name="apiCategoryId" id="apiCategoryId" style="width:195px;"
+                                        onchange="getApiListByCategoryId(this);">
+                                    <option value="">--请选择API类目--</option>
+                                    <% result.forEach(function(res) {%>
+                                    <option value="<%= res.fd_serviceid %>" <%= res.fd_serviceid == serviceid ? 'selected' : '' %>><%= res.fd_name %></option>
+                                    <% }) %>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">API名称(API Name)：</td>
+                            <td>
+                                <%= console.log(service)  %>
+                                <span id="SipApinameDiv"><select name="sip_apiname" id="sip_apiname"
+                                                                 style="width:195px;">
+                                        <option value="">--请选择API--</option>
+                                        <% for(var item in service){ %>
+                                        <option value="<%= item %>" <%= item == apiname ? 'selected' : '' %>><%= item %></option>
+                                        <% } %>
+                                    </select></span>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">数据环境(environment)：</td>
+                            <td class="checked"><input id="restId" type="radio" name="restId" value="1"> 沙箱(Sandbox)
+                                <input id="restId" type="radio" name="restId" checked="" value="2"> 正式(Online)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">提交方式(Method)：</td>
+                            <td><input type="radio" name="sip_http_method" value="2" checked=""> POST　<input
+                                        type="radio" name="sip_http_method" value="1"> GET
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">SDK类型(SDK Language)：</td>
+                            <td>
+                                <input type="radio" name="codeType" value="JAVA" checked=""> JAVA　
+                                <input type="radio" name="codeType" value="PHP"> PHP　
+                                <input type="radio" name="codeType" value=".NET"> .NET　
+                                <input type="radio" name="codeType" value="PYTHON"> PYTHON
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">AppKey：</td>
+                            <td><input type="text" id="app_key" name="app_key" value="系统分配(Default)"
+                                       style="width:190px;" readonly="true">&nbsp;<a href="javascript:void(0)"
+                                                                                     onclick="javascript:changeAppInfo();this.blur();"><span
+                                            id="automaticSpan">自定义(Custom Settings)</span></a></td>
+                        </tr>
+                        <tr>
+                            <td align="right">AppSecret：</td>
+                            <td><input type="text" id="app_secret" name="app_secret" value="系统分配(Default)"
+                                       style="width:190px;" readonly="true"></td>
+                        </tr>
+                        <tr id="sessionSapn" style="display:none">
+                            <td align="right">SessionKey：</td>
+                            <td><input type="text" id="session" name="session" value="" style="width:190px;">&nbsp;<a
+                                        href="javascript:void(0)"
+                                        onclick="alert('当API的访问级别为‘公开’时，SessionKey不需要填写；\r\n当API的访问级别为‘须用户登录’时，SessionKey必须填写；\r\n当API的访问级别为‘隐私数据须用户登录’时，SessionKey可填可不填；\r\n如何获取SessionKey，请搜索‘用户授权介绍’或点击上面的‘Session获取工具’');">说明</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                nick：
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" style="border-radius: 0px;
+                                width: 190px;
+                                padding-top: 0px;
+                                padding-bottom: 0px;
+                                padding-left: 0px;
+                                padding-right: 0px;
+                                height: 23px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input id="apiTestButton" type="button"
+                                       value="提交测试(Execute)"
+                                       onclick="checkForm();this.blur();"
+                                       style="height:24px;*padding-top:3px;border:#666666 1px solid;cursor:pointer">
+                                <input type="button" value="绑定用户(Authorize)"
+                                       onclick="bindUser();"
+                                       onfocus="blur();"
+                                       style="height:24px;*padding-top:3px;border:#666666 1px solid;cursor:pointer;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="col-md-6" valign="top" align="left">
+                    API请求参数(API Request)：
+                    <br>
+                    <textarea name="param" id="param" cols="90" rows="5" readonly="" class="form-control"></textarea>
+                    <br>
+                    <br>
+                    API返回结果(API Response)：
+					<span style="display:none" id="codeSearchButton">
+					<!--	<input type="button" data-placement="right" data-toggle="tooltip" data-original-title="江夜测试" onfocus="blur();" onclick="errorCodeSearch();" value="查询错误原因(Error Reason)"> -->
+					 	<a id="errorReason" data-placement="right" data-toggle="tooltip" data-original-title=""
+                           href="javascript:void(0);" class="tag">查看错误原因(Error Reason)</a>
+					 </span>
+                    <br>
+                    <textarea name="resultShow" id="resultShow" cols="90" rows="10" readonly="" class="form-control"></textarea>
+                    <br>
+                    <br>
+                    SDK调用示例代码(Sample Code)：
+                    <br>
+                    <textarea id="sampleCode" name="sampleCode" cols="90" rows="8" readonly="" class="form-control"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+
+<script type="text/javascript">
+    $(function () {
+
+    });
+
+    function checkForm(){
+        alert('提交测试(Execute)');
+    }
+
+    function bindUser(){
+        alert('绑定用户(Authorize)');
+    }
+</script>

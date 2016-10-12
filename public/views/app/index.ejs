@@ -1,0 +1,190 @@
+<% include ../common/header.ejs %>
+<div class="container container-body">
+    <div class="panel panel-default panel-table">
+        <div class="panel-heading">
+            <ul class="nav navbar-nav navbar-right use-info"
+                style="    position: relative;top: -7px;right: 10px;font-size: 1.3rem;">
+                <li class="dropdown" style="display: <%= uid == null ? 'none' : 'block' %>">
+                    <a href="#" id="showkey" class="dropdown-toggle"
+                       style="background-color: transparent;">应用信息<span class="caret"></span></a>
+                    <ul class="dropdown-menu default-app" style="border-radius: 5px;right: 18px;width: 300px;">
+                        <li>
+                            App Key： &nbsp;&nbsp;&nbsp;&nbsp;<%= appkey %>
+                        </li>
+                        <li>
+                            App Secret： <span id="app-secret"><%= appSecret %></span> <span style="cursor: pointer;margin-left: 5px;color: #3877f5"
+                                                               onclick="resetSecret('<%= app_id %>')">重置</span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <a class="btn btn-primary" href="/my/app/new">
+                <i class="glyphicon glyphicon-plus"></i>
+                添加服务
+            </a>
+            <!--<span style="float: right;margin: 7px 20px;">共<%= rdata.count %>条</span>-->
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th width="15%">服务编号</th>
+                    <th width="15%">名称</th>
+                    <th width="15%">状态</th>
+                    <th width="20%">描述</th>
+                    <th width="10%">全平台可见</th>
+                    <th width="15%">备注</th>
+                    <th width="10%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% rdata.apis.forEach(function(api) { %>
+                <tr>
+                    <td><a href="/my/app/p/<%= api.fd_serviceid %>/msglist"><%= api.fd_serviceid %></a></td>
+                    <td><a href="/my/app/p/<%= api.fd_serviceid %>/msglist"><%= api.fd_name %></a></td>
+                    <% if(api.fd_status == 0) { %>
+                    <td id="<%= api.fd_serviceid %>"><span class="service-status service-status-0 active"></span>已禁用
+                    </td>
+                    <% } else if(api.fd_status == 1) { %>
+                    <td id="<%= api.fd_serviceid %>"><span class="service-status service-status-1 active"></span>未上线
+                    </td>
+                    <% } else if(api.fd_status == 2) { %>
+                    <td id="<%= api.fd_serviceid %>"><span class="service-status service-status-2 active"></span>下线审核中
+                    </td>
+                    <% } else if(api.fd_status == 3) { %>
+                    <td id="<%= api.fd_serviceid %>"><span class="service-status service-status-3 active"></span>上线审核中
+                    </td>
+                    <% } else if(api.fd_status == 4) { %>
+                    <td id="<%= api.fd_serviceid %>"><span class="service-status service-status-4 active"></span>已上线
+                    </td>
+                    <% } %>
+                    <td><%= api.fd_description %></td>
+                    <td><input onclick="visible('<%= api.fd_serviceid %>','<%= api.fd_visible %>')"
+                               type="checkbox" <%= api.fd_visible == 1 ? 'checked' : '' %> style="cursor: pointer;"/>
+                    </td>
+                    <td><%= api.fd_remark %></td>
+                    <td id="<%= api.fd_serviceid %>_apply">
+                        <div class="dropdown">
+                            <a id="dLabel" data-target="#" href="javascript:void(0);" data-toggle="dropdown"
+                               role="button" aria-haspopup="true" aria-expanded="false">
+                                管理
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <li><a href="javascript:void(0);"
+                                       onclick="applyLine('<%= api.fd_serviceid %>', 3)">申请上线</a></li>
+                                <li><a href="javascript:void(0);"
+                                       onclick="applyLine('<%= api.fd_serviceid %>', 2)">申请下线</a></li>
+                                <li><a href="/my/app/update/<%= api.fd_serviceid %>">编辑</a></li>
+                                <li><a href="javascript:void(0);"
+                                       onclick="refreshService('<%= api.fd_serviceid %>')">刷新</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">
+            <ul class="pagination">
+                <li pagenum="1"><a href="/my/app/1">«</a></li>
+                <% for(var i = 1;i <= rdata.pages;i++) { %>
+                <li class="<%= (rdata.pagenum == i ? 'active' : '') %>" pagenum="<%= i %>"><a
+                            href="/my/app/<%= i %>"><%= i %></a></li>
+                <% } %>
+                <li pagenum="<%= rdata.pages %>"><a href="/my/app/<%= rdata.pages %>">»</a></li>
+            </ul>
+            <span style="float: right;margin: 7px 20px;">共<%= rdata.count %>条</span>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+
+<script type="text/javascript">
+    $(function () {
+        $('#showkey').on('click', function (e) {
+            if ($('.default-app').is(':hidden')) {
+                $('.default-app').show();
+            }
+            else {
+                $('.default-app').hide();
+            }
+            e.stopPropagation();
+        });
+        $(window).on('click', function (e) {
+            if ($(e.target).parents(".default-app").length > 0 || $(e.target).is($('.default-app'))) {
+
+            }
+            else {
+                $('.default-app').hide();
+            }
+        })
+    })
+
+    function resetSecret(app_id) {
+        $.post('/my/app/resetsecret', {fd_id: app_id}, function (result) {
+            if(result.status == 0){
+                $('#app-secret').html(result.data)
+            }
+        })
+    }
+
+    function applyLine(serviceid, code) {
+        BootstrapDialog.show({
+            title: '提示',
+            message: code == 2 ? '请确认是否申请下线?' : '请确认是否申请上线?',
+            buttons: [{
+                icon: 'glyphicon glyphicon-ok',
+                label: '确认',
+                cssClass: 'btn-success',
+                action: function (dialogItself) {
+                    $.post('/my/app/applyline', {fd_serviceid: serviceid, code: code}, function (data) {
+                        if (data.status == 0) {
+                            if (code == 2) { //申请下线
+                                $('#' + serviceid).html('<span class="service-status service-status-2 active"></span><a href="javascript:void(0);">下线审核中</a>');
+                            }
+                            else {
+                                $('#' + serviceid).html('<span class="service-status service-status-3 active"></span><a href="javascript:void(0);">上线审核中</a>');
+                            }
+                            dialogItself.close();
+                        }
+                    })
+                }
+            }, {
+                icon: 'glyphicon glyphicon-remove',
+                label: '关闭',
+                cssClass: 'btn-default',
+                action: function (dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+    function refreshService(serviceid) {
+        $.post('/my/app/refresh', {fd_serviceid: serviceid}, function (data) {
+            if (data.status == 0) {
+                BootstrapDialog.show({
+                    title: '提示',
+                    message: data.message,
+                    type: BootstrapDialog.TYPE_SUCCESS,
+                    onshow: function (dialogRef) {
+                        setTimeout(function () {
+                            dialogRef.close();
+                        }, 1000);
+                    }
+                });
+            }
+        })
+    }
+
+    function visible(serviceid, visible) {
+        $.post('/my/app/visible', {fd_serviceid: serviceid}, function (data) {
+            if (data.status == 0) {
+                dialogItself.close();
+            }
+        })
+    }
+</script>

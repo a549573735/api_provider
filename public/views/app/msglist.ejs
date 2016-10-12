@@ -1,0 +1,133 @@
+<% include ../common/header.ejs %>
+<style type="text/css">
+    @charset "UTF-8";
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+        display: none !important;
+    }
+
+    ng\:form {
+        display: block;
+    }
+
+    .ng-animate-start {
+        clip: rect(0, auto, auto, 0);
+        -ms-zoom: 1.0001;
+    }
+
+    .ng-animate-active {
+        clip: rect(-1px, auto, auto, 0);
+        -ms-zoom: 1;
+    }
+
+</style>
+<div class="container container-body">
+    <div class="row">
+        <% include ./header.ejs %>
+        <div class="col-md-2">
+            <% include ./menu.ejs %>
+        </div>
+        <div class="col-md-10">
+            <div class="panel panel-default panel-table" ng-app="msgApp" ng-controller="appCtrl">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-sm" href="/my/msg/new/<%= list[0].fd_serviceid %>/">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        添加消息
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th width="30%">消息名称</th>
+                            <th>消息类型</th>
+                            <th>描述</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in msgList" ng-cloak>
+                            <td>{{item.fd_name}}</td>
+                            <td>{{item.fd_from == 1 ? '商派' : '其他'}}</td>
+                            <td>{{item.fd_description}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a id="dLabel" data-target="#" href="javascript:void(0);" data-toggle="dropdown"
+                                       role="button" aria-haspopup="true" aria-expanded="false">
+                                        管理
+                                        <span class="caret"></span>
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                        <li><a href="/my/msg/editor/{{item.fd_serviceid}}/{{item.fd_id}}">编辑</a></li>
+                                        <li><a href="javascript:void(0);" ng-click="deleteMsg($index)">删除</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../common/footer.ejs %>
+<script type="text/javascript" src="/angular/angular.min.js"></script>
+<script type="text/javascript">
+    angular.module('msgApp', [])
+            .controller('appCtrl', ['$scope', '$http', function ($scope, $http) {
+                var fd_serviceid = '<%= list[0].fd_serviceid  %>';
+                $scope.msgList = [];
+
+                UI.loadshow();
+                $http.post('/my/msg/getMsgListByServiceId', JSON.stringify({fd_serviceid: fd_serviceid}))
+                        .success(function (result) {
+                            UI.loadhide();
+                            $scope.msgList = result.data;
+                        })
+
+                $scope.edit = function (index) {
+                    var cc = index;
+                }
+
+                $scope.deleteMsg = function (index) {
+                    BootstrapDialog.show({
+                        title: '提示',
+                        message: '请确认是否删除消息内容?',
+                        buttons: [{
+                            icon: 'glyphicon glyphicon-ok',
+                            label: '确认',
+                            cssClass: 'btn-success',
+                            action: function (dialogItself) {
+                                $.post('/my/msg/delete', {fd_id: $scope.msgList[index].fd_id}, function (data) {
+                                    if (data.status == 0) {
+                                        dialogItself.close();
+                                        $scope.msgList.splice(index, 1);
+                                        $scope.$apply();
+                                    }
+                                    else {
+                                        BootstrapDialog.show({
+                                            title: '提示',
+                                            message: JSON.stringify(result.message),
+                                            type: BootstrapDialog.TYPE_DANGER,
+                                            onshow: function (dialogRef) {
+                                                setTimeout(function () {
+                                                    dialogRef.close();
+                                                }, 1000);
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        }, {
+                            icon: 'glyphicon glyphicon-remove',
+                            label: '关闭',
+                            cssClass: 'btn-default',
+                            action: function (dialogItself) {
+                                dialogItself.close();
+                            }
+                        }]
+                    });
+                }
+            }])
+</script>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopex开放平台</title>
+
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap-dialog/dist/css/bootstrap-dialog.min.css" />
+
+    <!--build:css stylesheets/wapmain.min.css -->
+    <link rel='stylesheet' href='/css/main.css'/>
+    <link rel='stylesheet' href='/css/register.css'/>
+    <!--/build-->
+
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="login-container">
+            <img src="https://charging.teegon.com/static/img/sale/home/logo.png" width="100"
+                 style="position: relative;top:-2px;margin-right: 5px;"/>
+            <a>
+                开放平台
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-menu">
+            <li><a href="/apis">API</a></li>
+            <li><a href="#">开发者手册</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right use-info">
+            <li><a href="/login">登录</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="container right-con noNavCon">
+    <div class="pay-wrap">
+
+        <div class="col-lg-12 regist-wrap" style="margin-top:30px">
+            <!--<form role="form" class="form-style edit-form" action="http://matrix.teegon.com/index.php?ctl=home&func=do_reg" onsubmit="return checkThis();" method="post">-->
+            <ul class="form-inline" style="margin:0 auto;width:760px">
+                <li id="Name" class="row">
+                    <label><em>*</em> 登录名称:</label>
+                    <input type="text" name="uname" style="width: 300px;" placeholder="请输入您常用的手机号"
+                           class="text-input form-control" id="username" value="" title="">
+                    <h5 style="display: none; color:red;font-size:13px;display: inline-block;margin-left: 10px;"></h5>
+                </li>
+                <li id="Password" class="row">
+                    <label><em>*</em> 登录密码:</label>
+                    <input type="password" name="password" style="width: 300px;" placeholder="请输入您的登录密码"
+                           class="text-input form-control" id="password" value="" title="">
+                    <h5 style="display: none; color:red;font-size:13px;display: inline-block;margin-left: 10px;"></h5>
+                    <span style="font-size:12px;margin:3px 0 0 140px;color:#595959;display:block">6-18个字符，请使用字母加数字或符号组合，不能单独使用数字、字母或符号</span>
+                </li>
+                <li id="CfmPassword" class="row">
+                    <label><em>*</em> 重复密码:</label>
+                    <input type="password" name="reg[cfmpassword]" style="width: 300px;" placeholder="请再次输入您的登录密码"
+                           class="text-input form-control" value="" id="confirm-password" title="">
+                    <h5 style="display: none; color:red;font-size:13px;display: inline-block;margin-left: 10px;"></h5>
+                </li>
+                <!--
+                                    <li id="" class="row">
+                                        <label><em>*</em> 验证码:</label>
+                                        <input type="text" id="verifycode" name="reg[verifycode]" style="width: 300px;" placeholder=""
+                                               class="text-input form-control" value="" js-validate="verifycode" title="">
+                                        <h5 style="display: none; color:red;font-size:13px;display: inline-block;margin-left: 10px;"></h5>
+                                    </li>
+                                    <li id="" class="row">
+                                        <label><em></em> </label>
+                                        <img class="seccode-img" id="refresh" border="0" src="statics/public/dist/img/验证码.png"
+                                             width="80px" style="margin-right: 5px;"><a class="change-seccode" style="font-size:12px"
+                                                                                        href="javascript:;"
+                                                                                        onclick="ChangeSeccode(this);">看不清 换一张</a>
+                                    </li>
+                -->
+                <li id="" class="row">
+                    <label><em></em> </label>
+                    <button class="sub-btn btn btn-primary" style="width: 300px;" type="submit" name="dosubmit"
+                            value="dosubmit" id="go" onclick="checkThis()"><span><span>接受以下协议并注册</span></span></button>
+                    <br/>
+
+                </li>
+                <li id="" class="row">
+                    <label><em></em> </label>
+                    <a id="SwitchPrivacy" class="link-blue" style="margin:5px 10px;font-size:12px;color: #337ab7;"
+                       href="javascript:Toggle('#Privacy');">ShopEx商家用户中心服务条款</a>
+
+                    <div id="Privacy" class="display" style="display:none;">
+                        <div class="inner">
+                            <div class="content"
+                                 style="font-size:12px;border: 1px solid silver;padding:10px; line-height: 21px; color: #666;height: 400px;overflow: hidden;overflow-y: scroll;">
+                                <ul>
+                                    <li>您只有无条件接受以下所有服务条款，才能继续申请：</li>
+
+                                    <li><b>1、服务条款的确认和接纳</b></li>
+                                    商派服务涉及到的商派产品的所有权以及相关软件的知识产权归上海商派网络科技有限公司（简称商派）所有。
+                                    <br>商派所提供的服务必须按照其发布的公司章程，服务条款和操作规则严格执行。
+                                    <br>本服务条款的效力范围及于商派的一切产品和服务，用户在享受商派任何单项服务时，应当受本服务条款的约束。
+                                    <br>用户通过进入注册程序并点击“我接受”的按钮，即表示用户与商派已达成协议，自愿接受本服务条款的所有内容。
+                                    <br>当用户使用商派各单项服务时，用户的使用行为视为其对该单项服务的服务条款以及商派在该单项服务中发出的各类公告的同意。
+
+                                    <li><b>2、服务简介</b></li>
+                                    　　商派运用自己的产品和服务为用户提供各项服务。<br>
+                                    　　用户同意： <br>
+                                    （1）提供及时、详尽及准确的个人资料。 <br>
+                                    （2）不断更新注册资料，符合及时、详尽准确的要求。所有原始键入的资料将引用为注册资料。 <br>
+                                    　　另外，用户可授权商派向第三方透露其注册资料，否则商派不能公开用户的姓名、住址、出件地址、电子邮箱、帐号。除非：<br>
+                                    （1）用户要求商派或授权某人通过电子邮件服务透露这些信息。 <br>
+                                    （2）相应的法律、法规要求及程序服务需要商派提供用户的个人资料。 <br>
+                                    　　如果用户提供的资料不准确，不真实，不合法有效，商派保留结束用户使用商派各项服务的权利。用户在享用商派各项服务的同时，同意接受商派提供的各类信息服务。
+                                    <br>
+
+                                    <li><b>3、服务条款的修改 </b></li>
+                                    　　商派有权在必要时修改本服务条款以及各单项服务的相关条款。用户在享受单项服务时，应当及时查阅了解修改的内容，并自觉遵守本服务条款以及该单项服务的相关条款。
+
+                                    <li><b>4、服务修订</b></li>
+                                    　　商派保留随时修改或中断服务而不需通知用户的权利。用户接受商派行使修改或中断服务的权利，商派不需对用户或第三方负责。
+
+                                    <li><b>5、用户隐私制度 </b></li>
+                                    　　尊重用户个人隐私是商派的一项基本政策。所以，作为对以上第二点个人注册资料分析的补充，商派一定不会公开、修改或透露用户的注册资料及保存在商派各项服务中的非公开内容，除非商派在诚信的基础上认为透露这些信息在以下几种情况是必要的：
+                                    <br>
+                                    （1）遵守有关法律规定，包括在国家有关机关查询时，提供用户在商派的网页上发布的信息内容及其发布时间、互联网地址或者域名。 <br>
+                                    （2）保持维护商派的知识产权和其他重要权利。 <br>
+                                    （3）在紧急情况下竭力维护用户个人和社会大众的隐私安全。 <br>
+                                    （4）根据本条款相关规定或者商派认为必要的其他情况下。<br>
+
+                                    <li><b>6、用户的帐号、密码和安全性</b></li>
+                                    　　您一旦注册成功成为用户，您将得到一个密码和帐号。 <br>
+                                    如果您未保管好自己的帐号和密码而对您、商派或第三方造成的损害，您将负全部责任。<br>
+                                    另外，每个用户都要对其帐户中的所有活动和事件负全责。您可随时改变您的密码和图标，也可以结束旧的帐户重开一个新帐户。
+                                    用户同意若发现任何非法使用用户帐号或安全漏洞的情况，立即通告商派。<br>
+
+                                    <li><b>7、拒绝提供担保和免责声明</b></li>
+                                    　　用户明确同意使用商派产品和服务的风险由用户个人承担。 <br>
+                                    商派明确表示不提供任何类型的担保，不论是明确的或隐含的，但是对商业性的隐含担保，特定目的和不违反规定的适当担保除外。<br>
+                                    商派拒绝提供任何担保，包括信息能否准确、及时、顺利地传送。<br>
+                                    用户理解并使用商派产品和服务取决于用户自己，并由其承担系统受损、资料丢失以及其它任何风险。
+
+                                    <li><b>8、禁止服务的不正当化 </b></li>
+                                    　　用户承诺不经商派同意，不能利用商派各项服务进行转租，转售或其他不正当用途。
+
+                                    <li><b>9、用户管理 </b></li>
+                                    　　用户单独承担发布内容的责任。用户对服务的使用是根据所有适用于服务的地方法律、国家法律和国际法律标准的。用户承诺：<br>
+                                    （1）在商派的网页上发布信息或者利用商派的服务时必须符合中国有关法规(部分法规请见附录)，不得在商派的网页上或者利用商派的服务制作、复制、发布、传播以下信息：<br>
+                                    　 (a)反对宪法所确定的基本原则的； <br>
+                                    　 (b) 危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；<br>
+                                    　 (c) 损害国家荣誉和利益的；<br>
+                                    　 (d) 煽动民族仇恨、民族歧视，破坏民族团结的； <br>
+                                    　 (e) 破坏国家宗教政策，宣扬邪教和封建迷信的； <br>
+                                    　 (f) 散布谣言，扰乱社会秩序，破坏社会稳定的； <br>
+                                    　 (g) 散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；<br>
+                                    　 (h) 侮辱或者诽谤他人，侵害他人合法权益的； <br>
+                                    　 (i) 含有法律、行政法规禁止的其他内容的。<br>
+                                    （2）在商派的网页上发布信息或者利用商派的服务时还必须符合其他有关国家和地区的法律规定以及国际法的有关规定。<br>
+                                    （3）不利用商派的服务从事以下活动： <br>
+                                    　 (a) 未经允许，进入计算机信息网络或者使用计算机信息网络资源的； <br>
+                                    　 (b) 未经允许，对计算机信息网络功能进行删除、修改或者增加的； <br>
+                                    　 (c) 未经允许，对进入计算机信息网络中存储、处理或者传输的数据和应用程序进行删除、修改或者增加的； <br>
+                                    　 (d) 故意制作、传播计算机病毒等破坏性程序的；<br>
+                                    　 (e) 其他危害计算机信息网络安全的行为。 <br>
+                                    （4）不以任何方式干扰商派的服务。 <br>
+                                    （5）遵守商派的所有其他规定和程序。 <br>
+                                    用户须对自己在使用商派服务过程中的行为承担法律责任。用户承担法律责任的形式包括但不限于：<br>
+                                    对受到侵害者进行赔偿，以及在商派首先承担了因用户行为导致的行政处罚或侵权损害赔偿责任后，用户应给予商派等额的赔偿。<br>
+                                    用户理解，如果商派发现其网站传输的信息明显属于上段第(1)条所列内容之一，依据中国法律，<br>
+                                    商派有义务立即停止传输，保存有关记录，向国家有关机关报告，并且删除含有该内容的地址、目录或关闭服务器。
+
+                                    <li><b>10、保障</b></li>
+                                    　　用户同意保障和维护商派全体成员的利益，负责支付由用户使用超出服务范围引起的律师费用，<br>
+                                    违反服务条款的损害补偿费用，其它人使用用户的电脑、帐号而产生的费用。
+                                    <br>用户或者使用用户帐号的其他人在进行游戏过程中侵犯第三方知识产权及其他权利而导致被侵权人索赔的，由用户承担责任。
+
+                                    <li><b>11、结束服务</b></li>
+                                    　　用户或商派可根据各商派产品和服务的条款终止服务。
+
+                                    <li><b>12、通知 </b></li>
+                                    　　所有发给用户的通知都可通过电子邮件、常规的信件或在网站显著位置公告的方式进行传送。<br>
+                                    商派将通过上述方法之一将消息传递给用户，告知他们服务条款的修改、服务变更、或其它重要事情。
+
+                                    <li><b>13、法律</b></li>
+                                    　　用户和商派一致同意有关本协议以及使用商派的服务产生的争议交由仲裁解决，但是商派有权选择采取诉讼方式，并有权选择受理该诉讼的有管辖权的法院。
+                                    <br>若有任何服务条款与法律相抵触，那这些条款将按尽可能接近的方法重新解析，而其它条款则保持对用户产生法律效力和影响。
+
+                                    <li><b>14、ShopEx商家用户中心所含服务的信息储存及安全 </b></li>
+                                    商派对ShopExID上所有服务将尽力维护其安全性及方便性，但对服务中出现信息删除或储存失败不承担任何负责。<br>
+                                    另外我们保留判定用户的行为是否符合商派服务条款的要求的权利，如果用户违背了ShopExID服务条款的规定，将会中断其通行证服务的帐号。
+
+                                    <li><b>15、其他条款 </b></li>
+                                    用户在注册ShopEx商家用户中心后，注册、使用其他服务时，必须遵循该服务的相应条款。
+                                    <br>
+                                    您只有无条件接受以上所有服务条款，才能继续申请。
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li id="" class="row" style="margin:15px 0">
+                    <label style="font-weight:400;width:140px"><em></em> </label>
+                    已经有账号？<a
+                            href="/login" style="color: #337ab7;">登录</a>
+                </li>
+            </ul>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+
+
+<div class="usercenter-footder">
+    © 2003-2015 ShopEx,Inc.All rights reserved.
+</div>
+
+<script src="jquery/dist/jquery.min.js"></script>
+<script src="/js/register.js"></script>
+<script src="/js/utool.js"></script>
+<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bootstrap-dialog/dist/js/bootstrap-dialog.min.js"></script>
+
+<script>
+    $("#username").blur(function () {
+        $.post('/checkname', {login_name: $("#username").val()}, function (data) {
+            if (data.status != 0) {
+                $('#username').siblings('h5').text(data.message).show()
+            }
+            else {
+                $('#username').siblings('h5').text("");
+            }
+        })
+    });
+    function validating() {
+        $('.form-inline').find('h5').text('').hide();
+        //用户名
+        if ($('#username').val() == "") {
+            $('#username').siblings('h5').text('用户名称不能为空').show();
+            $('#username').focus();
+            return false;
+        }
+
+        if (!$("#username").val().match(/^1\d{10}$/)) {
+            $('#username').siblings('h5').text('请输入正确的手机号码').show();
+            $('#username').focus();
+            return false;
+        }
+
+        if (!$('#password').val().match(/(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{6,16}$/)) {
+            $('#password').siblings('h5').text('请输入正确的密码格式').show();
+            $('#password').focus();
+            return false;
+        }
+
+        if ($('#confirm-password').val() != $('#password').val()) {
+            $('#confirm-password').siblings('h5').text('两次输入的密码不一样').show();
+            $('#confirm-password').focus();
+            return false;
+        }
+        return true;
+    }
+
+    function checkThis() {
+        if (validating()) {
+            UI.loadshow();
+            $.post('/register', {
+                login_name: $("#username").val(),
+                password: $('#password').val(),
+                source: 'shopex开放平台'
+            }, function (data) {
+                UI.loadhide();
+                if(data.status == 0){
+                    BootstrapDialog.show({
+                        title: '提示',
+                        message: data.message,
+                        type: BootstrapDialog.TYPE_SUCCESS,
+                        onshow: function (dialogRef) {
+                            setTimeout(function () {
+                                dialogRef.close();
+                                window.location.href = '/login';
+                            }, 1000);
+                        }
+                    });
+                }
+                else{
+                    BootstrapDialog.show({
+                        title: '提示',
+                        message: data.message,
+                        type: BootstrapDialog.TYPE_DANGER,
+                        onshow: function (dialogRef) {
+                            setTimeout(function () {
+                                dialogRef.close();
+                            }, 1000);
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            return false;
+        }
+    }
+
+    function Toggle(e) {
+        if ($(e).is(":hidden")) {
+            $(e).show();
+        }
+        else {
+            $(e).hide();
+        }
+    }
+
+</script>
+
+
+</body>

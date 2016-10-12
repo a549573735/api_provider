@@ -1,0 +1,37 @@
+<footer id="footer" class="text-center">
+    <div class="restructure-footer hidden-xs  hidden-sm" id="restructure-footer" style="visibility: inherit;">
+        <div class="screen4-footer">
+            <div class="text-nav">
+                <a href="//support.teegon.com/">常见问题</a>|<a href="//charging.teegon.com/aboutus">关于我们</a>|<a href="//charging.teegon.com/contact">联系我们</a>|<a href="//charging.teegon.com/agreement">服务条款</a>|<a href="//charging.teegon.com/privacy">隐私条款</a>
+                <p>商派软件有限公司旗下网站 &nbsp;沪ICP备15055041号</p>
+            </div>
+        </div>
+
+    </div>
+</footer>
+<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bootstrap-dialog/dist/js/bootstrap-dialog.min.js"></script>
+
+<!--build:js javascripts/all.min.js -->
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript" src="/js/a.js"></script>
+<script type="text/javascript" src="/js/utool.js"></script>
+<script type="text/javascript" src="/js/topbar.js"></script>
+<!--/build-->
+
+<script type="text/javascript">
+    $('.top-openplatform-nav ul li').hover(function () {
+        $(this).find('.sub-nav ').slideDown();
+    }, function () {
+        $(this).find('.sub-nav').slideUp();
+    });
+    if(<%= uid == null %>){
+        cic_top_bar.need_login("/login", "/reg");
+    }
+    else{
+        cic_top_bar.is_login(<%= shopexid %>);
+    }
+</script>
+</body>
+</html>
